@@ -1,0 +1,121 @@
+File 'neural_network.cpp'
+Lines executed:100.00% of 41
+Branches executed:90.32% of 62
+Taken at least once:62.90% of 62
+Calls executed:87.21% of 86
+Creating 'neural_network.cpp.gcov'
+
+File '/usr/include/c++/12.1.0/bits/stl_vector.h'
+Lines executed:91.07% of 112
+Branches executed:75.00% of 16
+Taken at least once:43.75% of 16
+Calls executed:63.33% of 30
+Creating 'stl_vector.h.gcov'
+
+File '/usr/include/c++/12.1.0/iostream'
+No executable lines
+No branches
+No calls
+Removing 'iostream.gcov'
+
+File '/usr/include/c++/12.1.0/bits/new_allocator.h'
+Lines executed:82.35% of 17
+No branches
+No calls
+Creating 'new_allocator.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/stl_iterator.h'
+Lines executed:100.00% of 12
+No branches
+Calls executed:100.00% of 1
+Creating 'stl_iterator.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/move.h'
+Lines executed:100.00% of 6
+No branches
+No calls
+Creating 'move.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/alloc_traits.h'
+Lines executed:100.00% of 14
+No branches
+Calls executed:100.00% of 1
+Creating 'alloc_traits.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/stl_algobase.h'
+Lines executed:96.15% of 26
+Branches executed:100.00% of 6
+Taken at least once:83.33% of 6
+Calls executed:100.00% of 2
+Creating 'stl_algobase.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/stl_construct.h'
+Lines executed:100.00% of 14
+Branches executed:66.67% of 6
+Taken at least once:50.00% of 6
+Calls executed:85.71% of 7
+Creating 'stl_construct.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/stl_uninitialized.h'
+Lines executed:88.46% of 26
+Branches executed:66.67% of 6
+Taken at least once:50.00% of 6
+Calls executed:42.86% of 7
+Creating 'stl_uninitialized.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/cpp_type_traits.h'
+Lines executed:100.00% of 2
+No branches
+No calls
+Creating 'cpp_type_traits.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/stl_iterator_base_funcs.h'
+Lines executed:41.67% of 12
+No branches
+Calls executed:0.00% of 2
+Creating 'stl_iterator_base_funcs.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/allocator.h'
+Lines executed:100.00% of 4
+No branches
+No calls
+Creating 'allocator.h.gcov'
+
+File '/usr/include/c++/12.1.0/bits/vector.tcc'
+Lines executed:66.00% of 50
+Branches executed:40.00% of 10
+Taken at least once:20.00% of 10
+Calls executed:29.41% of 17
+Creating 'vector.tcc.gcov'
+
+File '/usr/include/c++/12.1.0/bits/stl_iterator_base_types.h'
+Lines executed:100.00% of 2
+No branches
+No calls
+Creating 'stl_iterator_base_types.h.gcov'
+
+File '/usr/include/c++/12.1.0/initializer_list'
+Lines executed:100.00% of 3
+No branches
+No calls
+Creating 'initializer_list.gcov'
+
+File '/usr/include/c++/12.1.0/ext/alloc_traits.h'
+Lines executed:100.00% of 2
+No branches
+Calls executed:100.00% of 1
+Creating 'alloc_traits.h.gcov'
+
+File '/usr/include/c++/12.1.0/cmath'
+Lines executed:100.00% of 4
+No branches
+No calls
+Creating 'cmath.gcov'
+
+File '/usr/include/c++/12.1.0/new'
+Lines executed:66.67% of 3
+No branches
+No calls
+Creating 'new.gcov'
+
+Lines executed:88.00% of 350
