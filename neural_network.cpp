@@ -17,7 +17,7 @@ float mean_squared_error(vector<float> y, vector<float> y_pred) {
     int n = y.size();
     float sum = 0;
     for (int i = 0; i < n; i++) {
-        sum += pow((y[i] - y_pred[i]), 2);
+        sum +=pow((y[i] - y_pred[i]), 2);
     }
 
     return sum / n;
@@ -26,7 +26,7 @@ float mean_squared_error(vector<float> y, vector<float> y_pred) {
 int main() {
     vector<float> layer2;
     vector<float> layer1 = {1};
-    for (int iter = 0; iter < 1000; iter++) {
+    for (int iter = 0; iter < 10000000; iter++) {
         layer1 = {1};
         layer2 = {};
 
@@ -71,10 +71,10 @@ int main() {
         float val = mean_squared_error(_true, layer2);
 
         loss.push_back(val);
-        cout << "**********************************\n";
-        cout << "Weight Vector after iteration: " << iter+1 << "\n";
-        // cout << w << "\n";
-        cout << "**********************************\n";
+        // cout << "**********************************\n";
+        // cout << "Weight Vector after iteration: " << iter+1 << "\n";
+        // // cout << w << "\n";
+        // cout << "**********************************\n";
     }
 
     // cout << layer2 << "\n";
