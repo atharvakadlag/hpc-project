@@ -1,10 +1,10 @@
-        -:    0:Source:/usr/include/c++/12.1.0/bits/stl_construct.h
+        -:    0:Source:/usr/include/c++/9/bits/stl_construct.h
         -:    0:Graph:neural_network.gcno
         -:    0:Data:neural_network.gcda
-        -:    0:Runs:1
+        -:    0:Runs:0
         -:    1:// nonstandard construct and destroy functions -*- C++ -*-
         -:    2:
-        -:    3:// Copyright (C) 2001-2022 Free Software Foundation, Inc.
+        -:    3:// Copyright (C) 2001-2019 Free Software Foundation, Inc.
         -:    4://
         -:    5:// This file is part of the GNU ISO C++ Library.  This library is free
         -:    6:// software; you can redistribute it and/or modify it under the
@@ -62,296 +62,279 @@
         -:   58:
         -:   59:#include <new>
         -:   60:#include <bits/move.h>
-        -:   61:#include <bits/stl_iterator_base_types.h> // for iterator_traits
-        -:   62:#include <bits/stl_iterator_base_funcs.h> // for advance
-        -:   63:
-        -:   64:/* This file provides the C++17 functions std::destroy_at, std::destroy, and
-        -:   65: * std::destroy_n, and the C++20 function std::construct_at.
-        -:   66: * It also provides std::_Construct, std::_Destroy,and std::_Destroy_n functions
-        -:   67: * which are defined in all standard modes and so can be used in C++98-14 code.
-        -:   68: * The _Destroy functions will dispatch to destroy_at during constant
-        -:   69: * evaluation, because calls to that function are intercepted by the compiler
-        -:   70: * to allow use in constant expressions.
-        -:   71: */
-        -:   72:
-        -:   73:namespace std _GLIBCXX_VISIBILITY(default)
-        -:   74:{
-        -:   75:_GLIBCXX_BEGIN_NAMESPACE_VERSION
-        -:   76:
-        -:   77:#if __cplusplus >= 201703L
-        -:   78:  template <typename _Tp>
-        -:   79:    _GLIBCXX20_CONSTEXPR inline void
-        -:   80:    destroy_at(_Tp* __location)
-        -:   81:    {
-        -:   82:      if constexpr (__cplusplus > 201703L && is_array_v<_Tp>)
-        -:   83:	{
-        -:   84:	  for (auto& __x : *__location)
-        -:   85:	    std::destroy_at(std::__addressof(__x));
-        -:   86:	}
-        -:   87:      else
-        -:   88:	__location->~_Tp();
-        -:   89:    }
-        -:   90:
-        -:   91:#if __cplusplus >= 202002L
-        -:   92:  template<typename _Tp, typename... _Args>
-        -:   93:    constexpr auto
-        -:   94:    construct_at(_Tp* __location, _Args&&... __args)
-        -:   95:    noexcept(noexcept(::new((void*)0) _Tp(std::declval<_Args>()...)))
-        -:   96:    -> decltype(::new((void*)0) _Tp(std::declval<_Args>()...))
-        -:   97:    { return ::new((void*)__location) _Tp(std::forward<_Args>(__args)...); }
-        -:   98:#endif // C++20
-        -:   99:#endif// C++17
-        -:  100:
-        -:  101:  /**
-        -:  102:   * Constructs an object in existing memory by invoking an allocated
-        -:  103:   * object's constructor with an initializer.
-        -:  104:   */
-        -:  105:#if __cplusplus >= 201103L
-        -:  106:  template<typename _Tp, typename... _Args>
-        -:  107:    _GLIBCXX20_CONSTEXPR
-        -:  108:    inline void
-function _ZSt10_ConstructISt6vectorIfSaIfEEJRKS2_EEvPT_DpOT0_ called 2002 returned 100% blocks executed 71%
-     2002:  109:    _Construct(_Tp* __p, _Args&&... __args)
-        -:  110:    {
-        -:  111:#if __cplusplus >= 202002L
-        -:  112:      if (std::__is_constant_evaluated())
-        -:  113:	{
-        -:  114:	  // Allow std::_Construct to be used in constant expressions.
-        -:  115:	  std::construct_at(__p, std::forward<_Args>(__args)...);
-        -:  116:	  return;
-        -:  117:	}
-        -:  118:#endif
-     2002:  119:      ::new((void*)__p) _Tp(std::forward<_Args>(__args)...);
-call    0 returned 2002
-call    1 returned 2002
-call    2 returned 2002
-branch  3 taken 2002 (fallthrough)
-branch  4 taken 0 (throw)
-branch  5 never executed
-branch  6 never executed
-call    7 never executed
-     2002:  120:    }
-        -:  121:#else
-        -:  122:  template<typename _T1, typename _T2>
-        -:  123:    inline void
-        -:  124:    _Construct(_T1* __p, const _T2& __value)
-        -:  125:    {
-        -:  126:      // _GLIBCXX_RESOLVE_LIB_DEFECTS
-        -:  127:      // 402. wrong new expression in [some_]allocator::construct
-        -:  128:      ::new(static_cast<void*>(__p)) _T1(__value);
-        -:  129:    }
-        -:  130:#endif
-        -:  131:
-        -:  132:  template<typename _T1>
-        -:  133:    inline void
-        -:  134:    _Construct_novalue(_T1* __p)
-        -:  135:    { ::new((void*)__p) _T1; }
-        -:  136:
-        -:  137:  template<typename _ForwardIterator>
-        -:  138:    _GLIBCXX20_CONSTEXPR void
-        -:  139:    _Destroy(_ForwardIterator __first, _ForwardIterator __last);
-        -:  140:
-        -:  141:  /**
-        -:  142:   * Destroy the object pointed to by a pointer type.
-        -:  143:   */
-        -:  144:  template<typename _Tp>
-        -:  145:    _GLIBCXX14_CONSTEXPR inline void
-function _ZSt8_DestroyISt6vectorIfSaIfEEEvPT_ called 2002 returned 100% blocks executed 100%
-     2002:  146:    _Destroy(_Tp* __pointer)
-        -:  147:    {
-        -:  148:#if __cplusplus > 201703L
-        -:  149:      std::destroy_at(__pointer);
-        -:  150:#else
-     2002:  151:      __pointer->~_Tp();
-call    0 returned 2002
-        -:  152:#endif
-     2002:  153:    }
-        -:  154:
-        -:  155:  template<bool>
-        -:  156:    struct _Destroy_aux
-        -:  157:    {
-        -:  158:      template<typename _ForwardIterator>
-        -:  159:	static _GLIBCXX20_CONSTEXPR void
-function _ZNSt12_Destroy_auxILb0EE9__destroyIPSt6vectorIfSaIfEEEEvT_S6_ called 1001 returned 100% blocks executed 100%
-     1001:  160:	__destroy(_ForwardIterator __first, _ForwardIterator __last)
-        -:  161:	{
-     3003:  162:	  for (; __first != __last; ++__first)
-branch  0 taken 2002
-branch  1 taken 1001 (fallthrough)
-     2002:  163:	    std::_Destroy(std::__addressof(*__first));
-call    0 returned 2002
-call    1 returned 2002
-     1001:  164:	}
-        -:  165:    };
-        -:  166:
-        -:  167:  template<>
-        -:  168:    struct _Destroy_aux<true>
-        -:  169:    {
-        -:  170:      template<typename _ForwardIterator>
-        -:  171:        static void
-     8007:  172:        __destroy(_ForwardIterator, _ForwardIterator) { }
+        -:   61:#include <ext/alloc_traits.h>
+        -:   62:
+        -:   63:namespace std _GLIBCXX_VISIBILITY(default)
+        -:   64:{
+        -:   65:_GLIBCXX_BEGIN_NAMESPACE_VERSION
+        -:   66:
+        -:   67:  /**
+        -:   68:   * Constructs an object in existing memory by invoking an allocated
+        -:   69:   * object's constructor with an initializer.
+        -:   70:   */
+        -:   71:#if __cplusplus >= 201103L
+        -:   72:  template<typename _T1, typename... _Args>
+        -:   73:    inline void
+function _ZSt10_ConstructISt6vectorIfSaIfEEJRKS2_EEvPT_DpOT0_ called 0 returned 0% blocks executed 0%
+    #####:   74:    _Construct(_T1* __p, _Args&&... __args)
+    #####:   75:    { ::new(static_cast<void*>(__p)) _T1(std::forward<_Args>(__args)...); }
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed
+branch  4 never executed
+call    5 never executed
+        -:   76:#else
+        -:   77:  template<typename _T1, typename _T2>
+        -:   78:    inline void
+        -:   79:    _Construct(_T1* __p, const _T2& __value)
+        -:   80:    {
+        -:   81:      // _GLIBCXX_RESOLVE_LIB_DEFECTS
+        -:   82:      // 402. wrong new expression in [some_]allocator::construct
+        -:   83:      ::new(static_cast<void*>(__p)) _T1(__value);
+        -:   84:    }
+        -:   85:#endif
+        -:   86:
+        -:   87:  template<typename _T1>
+        -:   88:    inline void
+        -:   89:    _Construct_novalue(_T1* __p)
+        -:   90:    { ::new(static_cast<void*>(__p)) _T1; }
+        -:   91:
+        -:   92:  /**
+        -:   93:   * Destroy the object pointed to by a pointer type.
+        -:   94:   */
+        -:   95:  template<typename _Tp>
+        -:   96:    inline void
+function _ZSt8_DestroyISt6vectorIfSaIfEEEvPT_ called 0 returned 0% blocks executed 0%
+    #####:   97:    _Destroy(_Tp* __pointer)
+    #####:   98:    { __pointer->~_Tp(); }
+call    0 never executed
+        -:   99:
+        -:  100:  template<bool>
+        -:  101:    struct _Destroy_aux
+        -:  102:    {
+        -:  103:      template<typename _ForwardIterator>
+        -:  104:        static void
+function _ZNSt12_Destroy_auxILb0EE9__destroyIPSt6vectorIfSaIfEEEEvT_S6_ called 0 returned 0% blocks executed 0%
+    #####:  105:        __destroy(_ForwardIterator __first, _ForwardIterator __last)
+        -:  106:	{
+    #####:  107:	  for (; __first != __last; ++__first)
+branch  0 never executed
+branch  1 never executed
+    #####:  108:	    std::_Destroy(std::__addressof(*__first));
+call    0 never executed
+call    1 never executed
+    #####:  109:	}
+        -:  110:    };
+        -:  111:
+        -:  112:  template<>
+        -:  113:    struct _Destroy_aux<true>
+        -:  114:    {
+        -:  115:      template<typename _ForwardIterator>
+        -:  116:        static void
+    #####:  117:        __destroy(_ForwardIterator, _ForwardIterator) { }
 ------------------
 _ZNSt12_Destroy_auxILb1EE9__destroyIPiEEvT_S3_:
-function _ZNSt12_Destroy_auxILb1EE9__destroyIPiEEvT_S3_ called 1 returned 100% blocks executed 100%
-        1:  172:        __destroy(_ForwardIterator, _ForwardIterator) { }
+function _ZNSt12_Destroy_auxILb1EE9__destroyIPiEEvT_S3_ called 0 returned 0% blocks executed 0%
+    #####:  117:        __destroy(_ForwardIterator, _ForwardIterator) { }
 ------------------
 _ZNSt12_Destroy_auxILb1EE9__destroyIPfEEvT_S3_:
-function _ZNSt12_Destroy_auxILb1EE9__destroyIPfEEvT_S3_ called 8006 returned 100% blocks executed 100%
-     8006:  172:        __destroy(_ForwardIterator, _ForwardIterator) { }
+function _ZNSt12_Destroy_auxILb1EE9__destroyIPfEEvT_S3_ called 0 returned 0% blocks executed 0%
+    #####:  117:        __destroy(_ForwardIterator, _ForwardIterator) { }
 ------------------
-        -:  173:    };
-        -:  174:
-        -:  175:  /**
-        -:  176:   * Destroy a range of objects.  If the value_type of the object has
-        -:  177:   * a trivial destructor, the compiler should optimize all of this
-        -:  178:   * away, otherwise the objects' destructors must be invoked.
-        -:  179:   */
-        -:  180:  template<typename _ForwardIterator>
-        -:  181:    _GLIBCXX20_CONSTEXPR inline void
-     9008:  182:    _Destroy(_ForwardIterator __first, _ForwardIterator __last)
-        -:  183:    {
-        -:  184:      typedef typename iterator_traits<_ForwardIterator>::value_type
-        -:  185:                       _Value_type;
-        -:  186:#if __cplusplus >= 201103L
-        -:  187:      // A deleted destructor is trivial, this ensures we reject such types:
-        -:  188:      static_assert(is_destructible<_Value_type>::value,
-        -:  189:		    "value type is destructible");
-        -:  190:#endif
-        -:  191:#if __cplusplus >= 202002L
-        -:  192:      if (std::__is_constant_evaluated())
-        -:  193:	return _Destroy_aux<false>::__destroy(__first, __last);
-        -:  194:#endif
-        -:  195:      std::_Destroy_aux<__has_trivial_destructor(_Value_type)>::
-     9008:  196:	__destroy(__first, __last);
-     9008:  197:    }
+        -:  118:    };
+        -:  119:
+        -:  120:  /**
+        -:  121:   * Destroy a range of objects.  If the value_type of the object has
+        -:  122:   * a trivial destructor, the compiler should optimize all of this
+        -:  123:   * away, otherwise the objects' destructors must be invoked.
+        -:  124:   */
+        -:  125:  template<typename _ForwardIterator>
+        -:  126:    inline void
+    #####:  127:    _Destroy(_ForwardIterator __first, _ForwardIterator __last)
+        -:  128:    {
+        -:  129:      typedef typename iterator_traits<_ForwardIterator>::value_type
+        -:  130:                       _Value_type;
+        -:  131:#if __cplusplus >= 201103L
+        -:  132:      // A deleted destructor is trivial, this ensures we reject such types:
+        -:  133:      static_assert(is_destructible<_Value_type>::value,
+        -:  134:		    "value type is destructible");
+        -:  135:#endif
+        -:  136:      std::_Destroy_aux<__has_trivial_destructor(_Value_type)>::
+    #####:  137:	__destroy(__first, __last);
+    #####:  138:    }
 ------------------
 _ZSt8_DestroyIPiEvT_S1_:
-function _ZSt8_DestroyIPiEvT_S1_ called 1 returned 100% blocks executed 100%
-        1:  182:    _Destroy(_ForwardIterator __first, _ForwardIterator __last)
-        -:  183:    {
-        -:  184:      typedef typename iterator_traits<_ForwardIterator>::value_type
-        -:  185:                       _Value_type;
-        -:  186:#if __cplusplus >= 201103L
-        -:  187:      // A deleted destructor is trivial, this ensures we reject such types:
-        -:  188:      static_assert(is_destructible<_Value_type>::value,
-        -:  189:		    "value type is destructible");
-        -:  190:#endif
-        -:  191:#if __cplusplus >= 202002L
-        -:  192:      if (std::__is_constant_evaluated())
-        -:  193:	return _Destroy_aux<false>::__destroy(__first, __last);
-        -:  194:#endif
-        -:  195:      std::_Destroy_aux<__has_trivial_destructor(_Value_type)>::
-        1:  196:	__destroy(__first, __last);
-call    0 returned 1
-        1:  197:    }
+function _ZSt8_DestroyIPiEvT_S1_ called 0 returned 0% blocks executed 0%
+    #####:  127:    _Destroy(_ForwardIterator __first, _ForwardIterator __last)
+        -:  128:    {
+        -:  129:      typedef typename iterator_traits<_ForwardIterator>::value_type
+        -:  130:                       _Value_type;
+        -:  131:#if __cplusplus >= 201103L
+        -:  132:      // A deleted destructor is trivial, this ensures we reject such types:
+        -:  133:      static_assert(is_destructible<_Value_type>::value,
+        -:  134:		    "value type is destructible");
+        -:  135:#endif
+        -:  136:      std::_Destroy_aux<__has_trivial_destructor(_Value_type)>::
+    #####:  137:	__destroy(__first, __last);
+call    0 never executed
+    #####:  138:    }
 ------------------
 _ZSt8_DestroyIPSt6vectorIfSaIfEEEvT_S4_:
-function _ZSt8_DestroyIPSt6vectorIfSaIfEEEvT_S4_ called 1001 returned 100% blocks executed 100%
-     1001:  182:    _Destroy(_ForwardIterator __first, _ForwardIterator __last)
-        -:  183:    {
-        -:  184:      typedef typename iterator_traits<_ForwardIterator>::value_type
-        -:  185:                       _Value_type;
-        -:  186:#if __cplusplus >= 201103L
-        -:  187:      // A deleted destructor is trivial, this ensures we reject such types:
-        -:  188:      static_assert(is_destructible<_Value_type>::value,
-        -:  189:		    "value type is destructible");
-        -:  190:#endif
-        -:  191:#if __cplusplus >= 202002L
-        -:  192:      if (std::__is_constant_evaluated())
-        -:  193:	return _Destroy_aux<false>::__destroy(__first, __last);
-        -:  194:#endif
-        -:  195:      std::_Destroy_aux<__has_trivial_destructor(_Value_type)>::
-     1001:  196:	__destroy(__first, __last);
-call    0 returned 1001
-     1001:  197:    }
+function _ZSt8_DestroyIPSt6vectorIfSaIfEEEvT_S4_ called 0 returned 0% blocks executed 0%
+    #####:  127:    _Destroy(_ForwardIterator __first, _ForwardIterator __last)
+        -:  128:    {
+        -:  129:      typedef typename iterator_traits<_ForwardIterator>::value_type
+        -:  130:                       _Value_type;
+        -:  131:#if __cplusplus >= 201103L
+        -:  132:      // A deleted destructor is trivial, this ensures we reject such types:
+        -:  133:      static_assert(is_destructible<_Value_type>::value,
+        -:  134:		    "value type is destructible");
+        -:  135:#endif
+        -:  136:      std::_Destroy_aux<__has_trivial_destructor(_Value_type)>::
+    #####:  137:	__destroy(__first, __last);
+call    0 never executed
+    #####:  138:    }
 ------------------
 _ZSt8_DestroyIPfEvT_S1_:
-function _ZSt8_DestroyIPfEvT_S1_ called 8006 returned 100% blocks executed 100%
-     8006:  182:    _Destroy(_ForwardIterator __first, _ForwardIterator __last)
-        -:  183:    {
-        -:  184:      typedef typename iterator_traits<_ForwardIterator>::value_type
-        -:  185:                       _Value_type;
-        -:  186:#if __cplusplus >= 201103L
-        -:  187:      // A deleted destructor is trivial, this ensures we reject such types:
-        -:  188:      static_assert(is_destructible<_Value_type>::value,
-        -:  189:		    "value type is destructible");
-        -:  190:#endif
-        -:  191:#if __cplusplus >= 202002L
-        -:  192:      if (std::__is_constant_evaluated())
-        -:  193:	return _Destroy_aux<false>::__destroy(__first, __last);
-        -:  194:#endif
-        -:  195:      std::_Destroy_aux<__has_trivial_destructor(_Value_type)>::
-     8006:  196:	__destroy(__first, __last);
-call    0 returned 8006
-     8006:  197:    }
+function _ZSt8_DestroyIPfEvT_S1_ called 0 returned 0% blocks executed 0%
+    #####:  127:    _Destroy(_ForwardIterator __first, _ForwardIterator __last)
+        -:  128:    {
+        -:  129:      typedef typename iterator_traits<_ForwardIterator>::value_type
+        -:  130:                       _Value_type;
+        -:  131:#if __cplusplus >= 201103L
+        -:  132:      // A deleted destructor is trivial, this ensures we reject such types:
+        -:  133:      static_assert(is_destructible<_Value_type>::value,
+        -:  134:		    "value type is destructible");
+        -:  135:#endif
+        -:  136:      std::_Destroy_aux<__has_trivial_destructor(_Value_type)>::
+    #####:  137:	__destroy(__first, __last);
+call    0 never executed
+    #####:  138:    }
 ------------------
-        -:  198:
-        -:  199:  template<bool>
-        -:  200:    struct _Destroy_n_aux
-        -:  201:    {
-        -:  202:      template<typename _ForwardIterator, typename _Size>
-        -:  203:	static _GLIBCXX20_CONSTEXPR _ForwardIterator
-        -:  204:	__destroy_n(_ForwardIterator __first, _Size __count)
-        -:  205:	{
-        -:  206:	  for (; __count > 0; (void)++__first, --__count)
-        -:  207:	    std::_Destroy(std::__addressof(*__first));
-        -:  208:	  return __first;
-        -:  209:	}
-        -:  210:    };
-        -:  211:
-        -:  212:  template<>
-        -:  213:    struct _Destroy_n_aux<true>
-        -:  214:    {
-        -:  215:      template<typename _ForwardIterator, typename _Size>
-        -:  216:        static _ForwardIterator
-        -:  217:        __destroy_n(_ForwardIterator __first, _Size __count)
-        -:  218:	{
-        -:  219:	  std::advance(__first, __count);
-        -:  220:	  return __first;
-        -:  221:	}
-        -:  222:    };
+        -:  139:
+        -:  140:  template<bool>
+        -:  141:    struct _Destroy_n_aux
+        -:  142:    {
+        -:  143:      template<typename _ForwardIterator, typename _Size>
+        -:  144:        static _ForwardIterator
+        -:  145:        __destroy_n(_ForwardIterator __first, _Size __count)
+        -:  146:	{
+        -:  147:	  for (; __count > 0; (void)++__first, --__count)
+        -:  148:	    std::_Destroy(std::__addressof(*__first));
+        -:  149:	  return __first;
+        -:  150:	}
+        -:  151:    };
+        -:  152:
+        -:  153:  template<>
+        -:  154:    struct _Destroy_n_aux<true>
+        -:  155:    {
+        -:  156:      template<typename _ForwardIterator, typename _Size>
+        -:  157:        static _ForwardIterator
+        -:  158:        __destroy_n(_ForwardIterator __first, _Size __count)
+        -:  159:	{
+        -:  160:	  std::advance(__first, __count);
+        -:  161:	  return __first;
+        -:  162:	}
+        -:  163:    };
+        -:  164:
+        -:  165:  /**
+        -:  166:   * Destroy a range of objects.  If the value_type of the object has
+        -:  167:   * a trivial destructor, the compiler should optimize all of this
+        -:  168:   * away, otherwise the objects' destructors must be invoked.
+        -:  169:   */
+        -:  170:  template<typename _ForwardIterator, typename _Size>
+        -:  171:    inline _ForwardIterator
+        -:  172:    _Destroy_n(_ForwardIterator __first, _Size __count)
+        -:  173:    {
+        -:  174:      typedef typename iterator_traits<_ForwardIterator>::value_type
+        -:  175:                       _Value_type;
+        -:  176:#if __cplusplus >= 201103L
+        -:  177:      // A deleted destructor is trivial, this ensures we reject such types:
+        -:  178:      static_assert(is_destructible<_Value_type>::value,
+        -:  179:		    "value type is destructible");
+        -:  180:#endif
+        -:  181:      return std::_Destroy_n_aux<__has_trivial_destructor(_Value_type)>::
+        -:  182:	__destroy_n(__first, __count);
+        -:  183:    }
+        -:  184:
+        -:  185:  /**
+        -:  186:   * Destroy a range of objects using the supplied allocator.  For
+        -:  187:   * nondefault allocators we do not optimize away invocation of 
+        -:  188:   * destroy() even if _Tp has a trivial destructor.
+        -:  189:   */
+        -:  190:
+        -:  191:  template<typename _ForwardIterator, typename _Allocator>
+        -:  192:    void
+        -:  193:    _Destroy(_ForwardIterator __first, _ForwardIterator __last,
+        -:  194:	     _Allocator& __alloc)
+        -:  195:    {
+        -:  196:      typedef __gnu_cxx::__alloc_traits<_Allocator> __traits;
+        -:  197:      for (; __first != __last; ++__first)
+        -:  198:	__traits::destroy(__alloc, std::__addressof(*__first));
+        -:  199:    }
+        -:  200:
+        -:  201:  template<typename _ForwardIterator, typename _Tp>
+        -:  202:    inline void
+    #####:  203:    _Destroy(_ForwardIterator __first, _ForwardIterator __last,
+        -:  204:	     allocator<_Tp>&)
+        -:  205:    {
+    #####:  206:      _Destroy(__first, __last);
+    #####:  207:    }
+------------------
+_ZSt8_DestroyIPiiEvT_S1_RSaIT0_E:
+function _ZSt8_DestroyIPiiEvT_S1_RSaIT0_E called 0 returned 0% blocks executed 0%
+    #####:  203:    _Destroy(_ForwardIterator __first, _ForwardIterator __last,
+        -:  204:	     allocator<_Tp>&)
+        -:  205:    {
+    #####:  206:      _Destroy(__first, __last);
+call    0 never executed
+    #####:  207:    }
+------------------
+_ZSt8_DestroyIPSt6vectorIfSaIfEES2_EvT_S4_RSaIT0_E:
+function _ZSt8_DestroyIPSt6vectorIfSaIfEES2_EvT_S4_RSaIT0_E called 0 returned 0% blocks executed 0%
+    #####:  203:    _Destroy(_ForwardIterator __first, _ForwardIterator __last,
+        -:  204:	     allocator<_Tp>&)
+        -:  205:    {
+    #####:  206:      _Destroy(__first, __last);
+call    0 never executed
+    #####:  207:    }
+------------------
+_ZSt8_DestroyIPffEvT_S1_RSaIT0_E:
+function _ZSt8_DestroyIPffEvT_S1_RSaIT0_E called 0 returned 0% blocks executed 0%
+    #####:  203:    _Destroy(_ForwardIterator __first, _ForwardIterator __last,
+        -:  204:	     allocator<_Tp>&)
+        -:  205:    {
+    #####:  206:      _Destroy(__first, __last);
+call    0 never executed
+    #####:  207:    }
+------------------
+        -:  208:
+        -:  209:#if __cplusplus > 201402L
+        -:  210:  template <typename _Tp>
+        -:  211:    inline void
+        -:  212:    destroy_at(_Tp* __location)
+        -:  213:    {
+        -:  214:      std::_Destroy(__location);
+        -:  215:    }
+        -:  216:
+        -:  217:  template <typename _ForwardIterator>
+        -:  218:    inline void
+        -:  219:    destroy(_ForwardIterator __first, _ForwardIterator __last)
+        -:  220:    {
+        -:  221:      std::_Destroy(__first, __last);
+        -:  222:    }
         -:  223:
-        -:  224:  /**
-        -:  225:   * Destroy a range of objects.  If the value_type of the object has
-        -:  226:   * a trivial destructor, the compiler should optimize all of this
-        -:  227:   * away, otherwise the objects' destructors must be invoked.
-        -:  228:   */
-        -:  229:  template<typename _ForwardIterator, typename _Size>
-        -:  230:    _GLIBCXX20_CONSTEXPR inline _ForwardIterator
-        -:  231:    _Destroy_n(_ForwardIterator __first, _Size __count)
-        -:  232:    {
-        -:  233:      typedef typename iterator_traits<_ForwardIterator>::value_type
-        -:  234:                       _Value_type;
-        -:  235:#if __cplusplus >= 201103L
-        -:  236:      // A deleted destructor is trivial, this ensures we reject such types:
-        -:  237:      static_assert(is_destructible<_Value_type>::value,
-        -:  238:		    "value type is destructible");
-        -:  239:#endif
-        -:  240:#if __cplusplus >= 202002L
-        -:  241:      if (std::__is_constant_evaluated())
-        -:  242:	return _Destroy_n_aux<false>::__destroy_n(__first, __count);
-        -:  243:#endif
-        -:  244:      return std::_Destroy_n_aux<__has_trivial_destructor(_Value_type)>::
-        -:  245:	__destroy_n(__first, __count);
-        -:  246:    }
-        -:  247:
-        -:  248:#if __cplusplus >= 201703L
-        -:  249:  template <typename _ForwardIterator>
-        -:  250:    _GLIBCXX20_CONSTEXPR inline void
-        -:  251:    destroy(_ForwardIterator __first, _ForwardIterator __last)
-        -:  252:    {
-        -:  253:      std::_Destroy(__first, __last);
-        -:  254:    }
-        -:  255:
-        -:  256:  template <typename _ForwardIterator, typename _Size>
-        -:  257:    _GLIBCXX20_CONSTEXPR inline _ForwardIterator
-        -:  258:    destroy_n(_ForwardIterator __first, _Size __count)
-        -:  259:    {
-        -:  260:      return std::_Destroy_n(__first, __count);
-        -:  261:    }
-        -:  262:#endif // C++17
-        -:  263:
-        -:  264:_GLIBCXX_END_NAMESPACE_VERSION
-        -:  265:} // namespace std
-        -:  266:
-        -:  267:#endif /* _STL_CONSTRUCT_H */
+        -:  224:  template <typename _ForwardIterator, typename _Size>
+        -:  225:    inline _ForwardIterator
+        -:  226:    destroy_n(_ForwardIterator __first, _Size __count)
+        -:  227:    {
+        -:  228:      return std::_Destroy_n(__first, __count);
+        -:  229:    }
+        -:  230:#endif
+        -:  231:
+        -:  232:_GLIBCXX_END_NAMESPACE_VERSION
+        -:  233:} // namespace std
+        -:  234:
+        -:  235:#endif /* _STL_CONSTRUCT_H */
+        -:  236:
